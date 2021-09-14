@@ -108,7 +108,7 @@ void gerar_chave() {
     printf("GERAR CHAVES\n");
     printf("-------------\n");
 
-    printf("Digite os dois números primos e o expoente:\n");
+    printf("Digite os números primos (p) e (q) e o expoente (e):\n");
     scanf("%lld %lld %lld", &p, &q, &e);
     getchar();
 
@@ -120,8 +120,8 @@ void gerar_chave() {
 
         if(euclides(n, phi) == 1) {
             FILE *publica = fopen("chave_publica.txt", "w");
-            fprintf(publica, "e: %lld\n", e);
             fprintf(publica, "n: %lld\n", n);
+            fprintf(publica, "e: %lld\n", e);
             fclose(publica);
 
             llint c[2];
@@ -136,9 +136,9 @@ void gerar_chave() {
 
             printf("Chaves criadas e salva nos arquivos 'chave_publica.txt' e 'chave_privada.txt'.\n");
         }
-        else printf("ERRO\n");
+        else printf("ERRO: MDC((P * Q), ((P - 1) * (Q - 1))) != 1\n");
     }
-    else printf("ERRO\n");
+    else printf("ERRO: P E Q NÃO SÃO COPRIMOS\n");
     
     return;
 }
@@ -219,35 +219,62 @@ llint numero_letra(llint num) {
 }
 
 llint descriptografar() {
-    llint d, n;
-    printf("Digite a chave privada (d) e (n):\n");
-    scanf("%lld %lld", &d, &n);
+    llint p, q, e;
+    printf("Digite os números primos (p) e (q) e o expoente (e):\n");
+    scanf("%lld %lld %lld", &p, &q, &e);
     getchar();
-
-    llint mensagemInt[TAM];
-    llint max = 0;
-
-    FILE *menCrip = fopen("mensagem_criptografada.txt", "r");
-    ler_messagem(menCrip, mensagemInt, &max);
-    fclose(menCrip);
-
-    char mensagemChar[max];
-
-    FILE *menDescrip = fopen("mensagem_descriptografada.txt", "w");
-
-    for(llint i = 0; i < max; i++) {
-        llint crip = potencia(mensagemInt[i], d, n);
-        mensagemChar[i] = (char) numero_letra(crip);
-
-        fprintf(menDescrip, "%c", mensagemChar[i]);
-    }
-
-    fclose(menDescrip);
 
     limpar();
 
-    printf("Mensagem descriptografada:\n%s\n\n", mensagemChar);
-    printf("Mensagem descriptografada e salva no arquivo 'mensagem_descriptografada.txt'.\n");
+    if(primo(p) && primo(q)) {
+        llint n = p * q;
+        llint phi = (p - 1) * (q - 1);
+
+        if(euclides(n, phi) == 1) {
+            llint c[2];
+            llint s[TAM];
+            congruencias(e, 1, phi, c, s);
+            llint d = s[0];
+
+            llint chave[2];
+
+            FILE *privada = fopen("chave_privada.txt", "r");
+            fscanf(privada, "d: %lld\n", &chave[0]);
+            fscanf(privada, "n: %lld\n", &chave[1]);
+            fclose(privada);
+
+            if(d == chave[0] && n == chave[1]) {
+                llint mensagemInt[TAM];
+                llint max = 0;
+
+                FILE *menCrip = fopen("mensagem_criptografada.txt", "r");
+                ler_messagem(menCrip, mensagemInt, &max);
+                fclose(menCrip);
+
+                char mensagemChar[max];
+
+                FILE *menDescrip = fopen("mensagem_descriptografada.txt", "w");
+
+                for(llint i = 0; i < max; i++) {
+                    llint crip = potencia(mensagemInt[i], d, n);
+                    mensagemChar[i] = (char) numero_letra(crip);
+
+                    fprintf(menDescrip, "%c", mensagemChar[i]);
+                }
+
+                fclose(menDescrip);
+
+                limpar();
+
+                printf("Mensagem descriptografada:\n%s\n\n", mensagemChar);
+                printf("Mensagem descriptografada e salva no arquivo 'mensagem_descriptografada.txt'.\n");
+            }
+            else printf("ERRO: CHAVE INVÁLIDA\n");
+        }
+        else printf("ERRO: MDC((P * Q), ((P - 1) * (Q - 1))) != 1\n");
+    }
+    else printf("ERRO: P E Q NÃO SÃO COPRIMOS\n");
+
 }
 
 void menu() {
@@ -257,7 +284,7 @@ void menu() {
         limpar();
 
         printf("------------------------------\n");
-        printf("             MENU             \n");
+        printf("############ MENU ############\n");
         printf("------------------------------\n");
         printf("|1| Gerar chaves\n");
         printf("|2| Criptografar\n");
@@ -284,7 +311,7 @@ void menu() {
             return;
 
         default:
-            printf("OPÇÃO INVÁLIDA\n");
+            printf("ERRO: OPÇÃO INVÁLIDA\n");
             getchar();
             break;
         }
