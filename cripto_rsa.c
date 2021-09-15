@@ -170,7 +170,7 @@ llint potencia(llint base, llint expoente, llint res) {
     }
 }
 
-llint criptografar() {
+void criptografar() {
     char mensagem[TAM];
     llint n, e;
 
@@ -203,6 +203,8 @@ llint criptografar() {
     limpar();
     
     printf("Mensagem criptografada e salva no arquivo 'mensagem_criptografada.txt'.\n");
+
+    return;
 }
 
 void ler_messagem(FILE *menCrip, llint mensagemInt[], llint *max){
@@ -218,7 +220,7 @@ llint numero_letra(llint num) {
         return num + 63;
 }
 
-llint descriptografar() {
+void descriptografar() {
     llint p, q, e;
     printf("Digite os números primos (p) e (q) e o expoente (e):\n");
     scanf("%lld %lld %lld", &p, &q, &e);
@@ -243,38 +245,36 @@ llint descriptografar() {
             fscanf(privada, "n: %lld\n", &chave[1]);
             fclose(privada);
 
-            if(d == chave[0] && n == chave[1]) {
-                llint mensagemInt[TAM];
-                llint max = 0;
+            llint mensagemInt[TAM];
+            llint max = 0;
 
-                FILE *menCrip = fopen("mensagem_criptografada.txt", "r");
-                ler_messagem(menCrip, mensagemInt, &max);
-                fclose(menCrip);
+            FILE *menCrip = fopen("mensagem_criptografada.txt", "r");
+            ler_messagem(menCrip, mensagemInt, &max);
+            fclose(menCrip);
 
-                char mensagemChar[max];
+            char mensagemChar[max];
 
-                FILE *menDescrip = fopen("mensagem_descriptografada.txt", "w");
+            FILE *menDescrip = fopen("mensagem_descriptografada.txt", "w");
 
-                for(llint i = 0; i < max; i++) {
-                    llint crip = potencia(mensagemInt[i], d, n);
-                    mensagemChar[i] = (char) numero_letra(crip);
+            for(llint i = 0; i < max; i++) {
+                llint crip = potencia(mensagemInt[i], d, n);
+                mensagemChar[i] = (char) numero_letra(crip);
 
-                    fprintf(menDescrip, "%c", mensagemChar[i]);
-                }
-
-                fclose(menDescrip);
-
-                limpar();
-
-                printf("Mensagem descriptografada:\n%s\n\n", mensagemChar);
-                printf("Mensagem descriptografada e salva no arquivo 'mensagem_descriptografada.txt'.\n");
+                fprintf(menDescrip, "%c", mensagemChar[i]);
             }
-            else printf("ERRO: CHAVE INVÁLIDA\n");
+
+            fclose(menDescrip);
+
+            limpar();
+
+            printf("Mensagem descriptografada:\n%s\n\n", mensagemChar);
+            printf("Mensagem descriptografada e salva no arquivo 'mensagem_descriptografada.txt'.\n");
         }
         else printf("ERRO: MDC((P * Q), ((P - 1) * (Q - 1))) != 1\n");
     }
     else printf("ERRO: P E Q NÃO SÃO COPRIMOS\n");
 
+    return;
 }
 
 void menu() {
