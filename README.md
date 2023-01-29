@@ -2,7 +2,7 @@
 
 Projeto de criptografia RSA desenvolvido para avaliação na matéria de Matemática Discreta sob orientação do professor Bruno Almeida Pimentel.
 
-Desenvolvido por: Adeilton dos Santos Mesquita, Carlos Henrique Roque Ferreira, Matheus Macário dos Santos, Maria Vitória Alves Spinelle e Mateus dos Santos Ferreira, alunos do Instituto de Computação na Universidade Federal de Alagoas - IC/UFAL.
+Desenvolvido por: Adeilton dos Santos Mesquita, Carlos Henrique Roque Ferreira, Matheus Macário dos Santos, Maria Vitória Alves Spinelle e Mateus dos Santos Ferreira, alunos do Instituto de Computação na Universidade Federal de Alagoas - IC/UFAL (A. C. Simões).
 
 **O ALGORTIMO FOI DESENVOLVIDO PARA TRATAR APENAS LETRAS DO ALFABETO DA LÍNGUA PORTUGESA, NÃO SÃO PERMITIDOS ACENTOS OU CARACTERES ESPECIAIS.**
 
